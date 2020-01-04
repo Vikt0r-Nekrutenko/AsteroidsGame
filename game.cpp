@@ -1,6 +1,7 @@
 
 
 #include "Framework.h"
+#include "GlobalSettings.h"
 
 /* Test Framework realization */
 class MyFramework : public Framework {
@@ -9,8 +10,8 @@ public:
 
 	virtual void PreInit(int& width, int& height, bool& fullscreen)
 	{
-		width = 320;
-		height = 200;
+        width = int(global::setting("screen_width"));
+        height = int(global::setting("screen_height"));
 		fullscreen = false;
 	}
 
@@ -50,5 +51,12 @@ public:
 
 int main(int argc, char *argv[])
 {
+    using namespace global;
+
+    readCmdParams(argc, argv, { { "-map",                 { &setting("map_width"),    &setting("map_height")     } },
+                                { "-window",              { &setting("screen_width"), &setting("screen_height")  } },
+                                { "-num_asteroids",       { &setting("num_asteroids")                            } },
+                                { "-num_ammo",            { &setting("num_ammo")                                 } },
+                                { "-ability_probability", { &setting("ability_probability")                      } } });
 	return run(new MyFramework);
 }
