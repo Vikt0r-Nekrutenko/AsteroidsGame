@@ -2,7 +2,7 @@
 
 #include "Framework.h"
 #include "GlobalSettings.h"
-#include "SpritesHolder.h"
+#include "SpritesDataHolder.h"
 
 /* Test Framework realization */
 class MyFramework : public Framework {
@@ -17,7 +17,6 @@ public:
 	}
 
 	virtual bool Init() {
-
         global::sprites().load("release/data/bullet.png", "bullet");
 		return true;
 	}
@@ -27,7 +26,8 @@ public:
 	}
 
 	virtual bool Tick() {
-        drawSprite(global::sprites().get("bullet"), 100, 100);
+        global::SpriteData &sprite_data_ref = global::sprites().get("bullet");
+        drawSprite(sprite_data_ref.sprite, 100, 100);
 		return false;
 	}
 

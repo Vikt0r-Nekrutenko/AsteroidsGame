@@ -7,13 +7,15 @@ DEFINES += _WINDOWS
 
 SOURCES += \
     GlobalSettings.cpp \
-    SpritesHolder.cpp \
+    SpritesDataHolder.cpp \
+    Vector2d.cpp \
     game.cpp
 
 HEADERS += \
     Framework.h \
     GlobalSettings.h \
-    SpritesHolder.h
+    SpritesDataHolder.h \
+    Vector2d.h
 
 win32: LIBS += -L$$PWD/release/ -lFrameworkRelease_x64
 
