@@ -1,55 +1,52 @@
+#include "game.h"
 
+void MyFramework::PreInit(int& width, int& height, bool& fullscreen)
+{
+    width = int(global::setting("screen_width"));
+    height = int(global::setting("screen_height"));
+    fullscreen = false;
+}
 
-#include "Framework.h"
-#include "GlobalSettings.h"
-#include "SpritesDataHolder.h"
+bool MyFramework::Init()
+{
 
-/* Test Framework realization */
-class MyFramework : public Framework {
+    return true;
+}
 
-public:
+void MyFramework::Close()
+{
 
-	virtual void PreInit(int& width, int& height, bool& fullscreen)
-	{
-        width = int(global::setting("screen_width"));
-        height = int(global::setting("screen_height"));
-		fullscreen = false;
-	}
+}
 
-	virtual bool Init() {
-        global::sprites().load("release/data/bullet.png", "bullet");
-		return true;
-	}
+bool MyFramework::Tick()
+{
+    return false;
+}
 
-	virtual void Close() {
+void MyFramework::onMouseMove(int x, int y, int xrelative, int yrelative)
+{
 
-	}
+}
 
-	virtual bool Tick() {
-        global::SpriteData &sprite_data_ref = global::sprites().get("bullet");
-        drawSprite(sprite_data_ref.sprite, 100, 100);
-		return false;
-	}
+void MyFramework::onMouseButtonClick(FRMouseButton button, bool isReleased)
+{
 
-	virtual void onMouseMove(int x, int y, int xrelative, int yrelative) {
+}
 
-	}
+void MyFramework::onKeyPressed(FRKey k)
+{
 
-	virtual void onMouseButtonClick(FRMouseButton button, bool isReleased) {
+}
 
-	}
+void MyFramework::onKeyReleased(FRKey k)
+{
 
-	virtual void onKeyPressed(FRKey k) {
-	}
+}
 
-	virtual void onKeyReleased(FRKey k) {
-	}
-	
-	virtual const char* GetTitle() override
-	{
-		return "asteroids";
-	}
-};
+const char* MyFramework::GetTitle()
+{
+    return "asteroids";
+}
 
 int main(int argc, char *argv[])
 {

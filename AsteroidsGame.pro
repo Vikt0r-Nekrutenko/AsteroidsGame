@@ -15,7 +15,8 @@ HEADERS += \
     Framework.h \
     GlobalSettings.h \
     SpritesDataHolder.h \
-    Vector2d.h
+    Vector2d.h \
+    game.h
 
 win32: LIBS += -L$$PWD/release/ -lFrameworkRelease_x64
 
