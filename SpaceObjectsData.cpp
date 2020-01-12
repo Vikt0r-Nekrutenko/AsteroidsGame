@@ -178,10 +178,10 @@ vector<SpaceObjectsData::OverlappedPair> SpaceObjectsData::overlapping(SpaceObje
 {
     vector<OverlappedPair> overlaped_indxs;
 
-    for (size_t indx_1 = 0ull; indx_1 < m_positions.size() - 1ull; indx_1++) {
-        for (size_t indx_2 = 0ull; indx_2 < m_positions.size(); indx_2++) {
-            if (!m_destr_types[indx_1]->isDestroyed() && !m_destr_types[indx_2]->isDestroyed()) {
-                if (m_positions[indx_1].distanceTo(m_positions[indx_2]) < m_radiuses[indx_1] + m_radiuses[indx_2])
+    for (size_t indx_1 = 0ull; indx_1 < m_positions.size(); indx_1++) {
+        for (size_t indx_2 = 0ull; indx_2 < targets.m_positions.size(); indx_2++) {
+            if (!m_destr_types[indx_1]->isDestroyed() && !targets.m_destr_types[indx_2]->isDestroyed()) {
+                if (m_positions[indx_1].distanceTo(targets.m_positions[indx_2]) < m_radiuses[indx_1] + targets.m_radiuses[indx_2])
                     overlaped_indxs.push_back({ indx_1, indx_2 });
             }
         }

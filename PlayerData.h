@@ -10,11 +10,11 @@ const float DEF_MOMENTUM = 0.8f;
 class PlayerData : public SpaceObjectsData
 {
 public:
+    float getAngle() const;
+
     void update(float dt) override;
 
     void setAngle(Vector2d delta_position);
-
-    float getAngle() const;
 
     void setMomentum(float value);
 

@@ -7,6 +7,7 @@
 
 #include "AsteroidsData.h"
 #include "PlayerData.h"
+#include "BulletsData.h"
 
 class MyFramework : public Framework {
 public:
@@ -23,6 +24,7 @@ public:
 private:
     AsteroidsData asteroids;
     PlayerData player;
+    BulletsData bullets;
 
     Vector2d cursor_position;
     float dt = 0.f;

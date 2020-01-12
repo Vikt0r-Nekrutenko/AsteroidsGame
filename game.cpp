@@ -18,6 +18,7 @@ bool MyFramework::Init()
     sprites().load("release/data/big_asteroid.png", "big_asteroid");
     sprites().load("release/data/small_asteroid.png", "small_asteroid");
     sprites().load("release/data/spaceship.png", "spaceship");
+    &sprites().load("release/data/bullet.png", "bullet");
 
     for (int i = 0; i < setting("num_asteroids"); i++)
         asteroids.add({ 0.f, 0.f },
@@ -47,11 +48,17 @@ bool MyFramework::Tick()
     player.draw();
     player.update(dt);
 
+    bullets.draw();
+    bullets.update(dt);
+
     asteroids.draw();
     asteroids.update(dt);
 
     vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds = asteroids.overlapping();
     asteroids.collisionHandler(ovrlpd_astrds, asteroids, dt);
+
+    vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds_bullts = bullets.overlapping(asteroids);
+    bullets.collisionHandler(ovrlpd_astrds_bullts, asteroids, dt);
 
     this_thread::sleep_for(chrono::milliseconds(5));
     auto t2 = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1);
@@ -72,7 +79,17 @@ void MyFramework::onMouseMove(int x, int y, int xrelative, int yrelative)
 
 void MyFramework::onMouseButtonClick(FRMouseButton button, bool isReleased)
 {
+    if (isReleased) {
+        switch (button) {
+        case FRMouseButton::LEFT:
+            bullets.add(player.getPosition(0),
+                        { 4 * MAX_OBJ_VELOCITY * sinf(player.getAngle()), 4 * MAX_OBJ_VELOCITY * -cosf(player.getAngle()) },
+                        &sprites().get("bullet"),
+                        new OneStageDestruction);
 
+            break;
+        }
+    }
 }
 
 void MyFramework::onKeyPressed(FRKey k)

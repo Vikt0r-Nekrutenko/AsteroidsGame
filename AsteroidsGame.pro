@@ -7,6 +7,7 @@ DEFINES += _WINDOWS
 
 SOURCES += \
     AsteroidsData.cpp \
+    BulletsData.cpp \
     Destructible.cpp \
     GlobalSettings.cpp \
     Map.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
 
 HEADERS += \
     AsteroidsData.h \
+    BulletsData.h \
     Destructible.h \
     Framework.h \
     GlobalSettings.h \
