@@ -19,8 +19,9 @@ bool MyFramework::Init()
     sprites().load("release/data/small_asteroid.png", "small_asteroid");
 
     for (int i = 0; i < setting("num_asteroids"); i++)
-        asteroids.add({ random(0, setting("map_width")), random(0, setting("map_height")) },
-                      { random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY), random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY)},
+        asteroids.add({ 0.f, 0.f },
+                      { 0.f, 0.f },
+//                      { random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY), random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY)},
                       &sprites().get("big_asteroid"), new BigAsteroidDestruction);
     asteroids.placeObjects({340, 190}, 150);
     return true;

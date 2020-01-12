@@ -6,6 +6,7 @@ CONFIG -= qt
 DEFINES += _WINDOWS
 
 SOURCES += \
+    AsteroidsData.cpp \
     Destructible.cpp \
     GlobalSettings.cpp \
     Map.cpp \
@@ -15,6 +16,7 @@ SOURCES += \
     game.cpp
 
 HEADERS += \
+    AsteroidsData.h \
     Destructible.h \
     Framework.h \
     GlobalSettings.h \

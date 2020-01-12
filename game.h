@@ -5,7 +5,7 @@
 #include "GlobalSettings.h"
 #include "SpritesDataHolder.h"
 
-#include "SpaceObjectsData.h"
+#include "AsteroidsData.h"
 
 class MyFramework : public Framework {
 public:
@@ -20,7 +20,7 @@ public:
     const char * GetTitle() override;
 
 private:
-    SpaceObjectsData asteroids;
+    AsteroidsData asteroids;
 
     float dt = 0.f;
 };
