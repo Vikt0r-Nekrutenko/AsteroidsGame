@@ -32,6 +32,7 @@ public:
     const Vector2d &getPosition(size_t indx) const;
     const Vector2d &getVelocity(size_t indx) const;
     const SpriteData *getSpriteData(size_t indx) const;
+    const Destructible *getDestructibleType(size_t indx) const;
     float getRadius(size_t indx) const;
 
     float left(size_t indx);

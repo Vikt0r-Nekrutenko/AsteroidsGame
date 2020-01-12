@@ -9,6 +9,15 @@
 #include "PlayerData.h"
 #include "BulletsData.h"
 
+class ImprovementsData : public SpaceObjectsData
+{
+public:
+
+private:
+    vector<float> m_periods;
+    vector<bool> m_stages;
+};
+
 class MyFramework : public Framework {
 public:
     void PreInit(int &width, int &height, bool &fullscreen) override;
@@ -22,9 +31,10 @@ public:
     const char * GetTitle() override;
 
 private:
+    ImprovementsData improvements;
     AsteroidsData asteroids;
-    PlayerData player;
     BulletsData bullets;
+    PlayerData player;
 
     Vector2d cursor_position;
     float dt = 0.f;

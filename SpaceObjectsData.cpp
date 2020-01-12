@@ -38,6 +38,11 @@ const SpriteData *SpaceObjectsData::getSpriteData(size_t indx) const
     return m_sprite_datas[indx];
 }
 
+const Destructible *SpaceObjectsData::getDestructibleType(size_t indx) const
+{
+    return m_destr_types[indx];
+}
+
 float SpaceObjectsData::getRadius(size_t indx) const
 {
     return m_radiuses[indx];

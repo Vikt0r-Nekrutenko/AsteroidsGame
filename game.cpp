@@ -18,7 +18,10 @@ bool MyFramework::Init()
     sprites().load("release/data/big_asteroid.png", "big_asteroid");
     sprites().load("release/data/small_asteroid.png", "small_asteroid");
     sprites().load("release/data/spaceship.png", "spaceship");
-    &sprites().load("release/data/bullet.png", "bullet");
+    sprites().load("release/data/bullet.png", "bullet");
+    sprites().load("release/data/auto_shooting.png", "auto_shooting");
+    sprites().load("release/data/shield.png", "shield");
+    sprites().load("release/data/rocket.png", "rocket");
 
     for (int i = 0; i < setting("num_asteroids"); i++)
         asteroids.add({ 0.f, 0.f },
@@ -54,11 +57,33 @@ bool MyFramework::Tick()
     asteroids.draw();
     asteroids.update(dt);
 
+    improvements.draw();
+    improvements.update(dt);
+
     vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds = asteroids.overlapping();
     asteroids.collisionHandler(ovrlpd_astrds, asteroids, dt);
 
     vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds_bullts = bullets.overlapping(asteroids);
     bullets.collisionHandler(ovrlpd_astrds_bullts, asteroids, dt);
+
+    for (size_t indx = 0ull; indx < ovrlpd_astrds_bullts.size(); indx++) {
+        size_t asteroid_indx = ovrlpd_astrds_bullts[indx].target;
+
+        if (asteroids.getDestructibleType(asteroid_indx)->isDestroyed()) {
+            int posible_imprv = random(0.f, 3.f);
+            switch (posible_imprv) {
+            case 0:
+                improvements.add(asteroids.getPosition(asteroid_indx), {0,0}, &sprites().get("shield"), new OneStageDestruction);
+                break;
+            case 1:
+                improvements.add(asteroids.getPosition(asteroid_indx), {0,0}, &sprites().get("auto_shooting"), new OneStageDestruction);
+                break;
+            case 2:
+                improvements.add(asteroids.getPosition(asteroid_indx), {0,0}, &sprites().get("rocket"), new OneStageDestruction);
+                break;
+            }
+        }
+    }
 
     this_thread::sleep_for(chrono::milliseconds(5));
     auto t2 = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1);
