@@ -10,6 +10,8 @@ SOURCES += \
     BulletsData.cpp \
     Destructible.cpp \
     GlobalSettings.cpp \
+    Improvable.cpp \
+    ImprovementsData.cpp \
     Map.cpp \
     PlayerData.cpp \
     SpaceObjectsData.cpp \
@@ -23,6 +25,8 @@ HEADERS += \
     Destructible.h \
     Framework.h \
     GlobalSettings.h \
+    Improvable.h \
+    ImprovementsData.h \
     Map.h \
     PlayerData.h \
     SpaceObjectsData.h \

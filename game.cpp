@@ -24,16 +24,14 @@ bool MyFramework::Init()
     sprites().load("release/data/rocket.png", "rocket");
 
     for (int i = 0; i < setting("num_asteroids"); i++)
-        asteroids.add({ 0.f, 0.f },
-                      { 0.f, 0.f },
-//                      { random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY), random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY)},
-                      &sprites().get("big_asteroid"), new BigAsteroidDestruction);
-    player.add({ setting("map_width") / 2.f, setting("map_height") / 2.f },
-               { 0.f, 0.f },
-               &sprites().get("spaceship"),
-               new OneStageDestruction);
+        asteroids.add({ 0.f, 0.f }, { random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY), random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY)}, &sprites().get("big_asteroid"), new BigAsteroidDestruction);
+    player.add({ setting("map_width") / 2.f, setting("map_height") / 2.f }, { 0.f, 0.f }, &sprites().get("spaceship"), new OneStageDestruction);
 
-    asteroids.placeObjects(player.getPosition(0ull), 150);
+    player.setImprovementsData(&improvements);
+    improvements.setPlayerData(&player);
+    improvements.setAsteroidsData(&asteroids);
+
+    asteroids.placeObjects(player.getPosition(0ull), CLEAR_SPACE_RADIUS);
     return true;
 }
 
@@ -46,49 +44,53 @@ bool MyFramework::Tick()
 {
     auto t1 = chrono::high_resolution_clock::now();
 
-    drawMap();
+    // drawing & updating
+    {
+        drawMap();
 
-    player.draw();
-    player.update(dt);
+        player.draw();
+        player.update(dt);
 
-    bullets.draw();
-    bullets.update(dt);
+        bullets.draw();
+        bullets.update(dt);
 
-    asteroids.draw();
-    asteroids.update(dt);
+        asteroids.draw();
+        asteroids.update(dt);
 
-    improvements.draw();
-    improvements.update(dt);
+        improvements.draw();
+        improvements.update(dt);
+    }
 
-    vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds = asteroids.overlapping();
-    asteroids.collisionHandler(ovrlpd_astrds, asteroids, dt);
+    // collision & overlapping
+    {
+        // between improvements & asteroids;
+        vector<SpaceObjectsData::OverlappedPair> ovrlpd_imprvs_astrds = improvements.overlapping(asteroids);
+        improvements.collisionHandler(ovrlpd_imprvs_astrds, asteroids, dt);
 
-    vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds_bullts = bullets.overlapping(asteroids);
-    bullets.collisionHandler(ovrlpd_astrds_bullts, asteroids, dt);
+        // between improvements & player;
+        vector<SpaceObjectsData::OverlappedPair> ovrlpd_imprvs_player = improvements.overlapping(player);
+        player.addImprovements(ovrlpd_imprvs_player);
 
-    for (size_t indx = 0ull; indx < ovrlpd_astrds_bullts.size(); indx++) {
-        size_t asteroid_indx = ovrlpd_astrds_bullts[indx].target;
+        // between asteroids & asteroids
+        vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds = asteroids.overlapping();
+        asteroids.collisionHandler(ovrlpd_astrds, asteroids, dt);
 
-        if (asteroids.getDestructibleType(asteroid_indx)->isDestroyed()) {
-            int posible_imprv = random(0.f, 3.f);
-            switch (posible_imprv) {
-            case 0:
-                improvements.add(asteroids.getPosition(asteroid_indx), {0,0}, &sprites().get("shield"), new OneStageDestruction);
-                break;
-            case 1:
-                improvements.add(asteroids.getPosition(asteroid_indx), {0,0}, &sprites().get("auto_shooting"), new OneStageDestruction);
-                break;
-            case 2:
-                improvements.add(asteroids.getPosition(asteroid_indx), {0,0}, &sprites().get("rocket"), new OneStageDestruction);
-                break;
-            }
-        }
+        // between bullets & asteroids
+        vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds_bullts = bullets.overlapping(asteroids);
+        bullets.collisionHandler(ovrlpd_astrds_bullts, asteroids, dt);
+
+        // creation new improvement
+        createImprovement(ovrlpd_astrds_bullts);
+
+        // game restarting
+        vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds_player = asteroids.overlapping(player);
+        restart(ovrlpd_astrds_player);
     }
 
     this_thread::sleep_for(chrono::milliseconds(5));
     auto t2 = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1);
     dt = t2.count() / 1000.f;
-    printf("%.2f\r", 1.f / dt);
+
     return false;
 }
 
@@ -113,6 +115,14 @@ void MyFramework::onMouseButtonClick(FRMouseButton button, bool isReleased)
                         new OneStageDestruction);
 
             break;
+        case FRMouseButton::RIGHT:
+            player.activateImprovements();
+            for (size_t indx = 0ull; indx < asteroids.size(); indx++) {
+                if (cursor_position.distanceTo(asteroids.getPosition(indx)) < asteroids.getRadius(indx)) {
+                    improvements.setCurrentTarget(indx);
+                }
+            }
+            break;
         }
     }
 }
@@ -136,6 +146,66 @@ void MyFramework::onKeyReleased(FRKey k)
 const char* MyFramework::GetTitle()
 {
     return "asteroids";
+}
+
+void MyFramework::restart(vector<SpaceObjectsData::OverlappedPair> ovrlpd_indxs)
+{
+    if (!ovrlpd_indxs.empty()) {
+        // player restarting
+        {
+            player.setPosition(0ULL, { setting("map_width") / 2.f, setting("map_height") / 2.f });
+            player.setVelocity(0ULL, { 0.f, 0.f });
+        }
+
+        // asteroids restarting
+        {
+            asteroids.remove(asteroids.size() - setting("num_asteroids"));
+
+            for (size_t i = 0ull; i < setting("num_asteroids"); i++) {
+                asteroids.restore(i);
+                asteroids.setVelocity(i, { random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY), random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY)});
+            }
+
+            asteroids.placeObjects(player.getPosition(0), CLEAR_SPACE_RADIUS);
+        }
+
+        // bullets restarting
+        {
+            for (size_t i = 0ull; i < setting("num_ammo"); i++) {
+                bullets.destroy(i);
+            }
+        }
+
+        // improvements restarting
+        {
+            improvements.remove(improvements.size());
+        }
+    }
+}
+
+void MyFramework::createImprovement(vector<SpaceObjectsData::OverlappedPair> ovrlpd_indxs)
+{
+    for (size_t indx = 0ull; indx < ovrlpd_indxs.size(); indx++) {
+        size_t asteroid_indx = ovrlpd_indxs[indx].target;
+
+        if (asteroids.getDestructibleType(asteroid_indx)->isDestroyed()) {
+            float probability = random(0.f, 100.f);
+            if(probability < setting("ability_probability") * 100.f){
+                int posible_imprv = random(0.f, 3.f);
+                switch (posible_imprv) {
+                case 0:
+                    improvements.add(asteroids.getPosition(asteroid_indx), {0,0}, &sprites().get("shield"), new OneStageDestruction, new Shield);
+                    break;
+                case 1:
+                    improvements.add(asteroids.getPosition(asteroid_indx), {0,0}, &sprites().get("auto_shooting"), new OneStageDestruction, new AutoShooting);
+                    break;
+                case 2:
+                    improvements.add(asteroids.getPosition(asteroid_indx), {0,0}, &sprites().get("rocket"), new OneStageDestruction, new Rocket);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 int main(int argc, char *argv[])

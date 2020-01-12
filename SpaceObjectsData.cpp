@@ -48,6 +48,11 @@ float SpaceObjectsData::getRadius(size_t indx) const
     return m_radiuses[indx];
 }
 
+size_t SpaceObjectsData::size() const
+{
+    return m_destr_types.size();
+}
+
 float SpaceObjectsData::left(size_t indx)
 {
     return m_positions[indx].m_x - m_radiuses[indx];

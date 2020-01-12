@@ -34,6 +34,7 @@ public:
     const SpriteData *getSpriteData(size_t indx) const;
     const Destructible *getDestructibleType(size_t indx) const;
     float getRadius(size_t indx) const;
+    size_t size() const;
 
     float left(size_t indx);
     float top(size_t indx);

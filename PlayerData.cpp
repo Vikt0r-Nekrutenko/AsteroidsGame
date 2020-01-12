@@ -1,5 +1,6 @@
 #include "PlayerData.h"
 #include "GlobalSettings.h"
+#include "ImprovementsData.h"
 #include <cmath>
 
 using namespace global;
@@ -8,10 +9,10 @@ void PlayerData::update(float dt)
 {
     Vector2d acceleration;
 
-    if (fabsf(m_velocities[0].m_x) > MIN_OBJ_VELOCITY)
-        acceleration.m_x = -m_velocities[0].m_x * m_momentum;
-    if (fabsf(m_velocities[0].m_y) > MIN_OBJ_VELOCITY)
-        acceleration.m_y = -m_velocities[0].m_y * m_momentum;
+    acceleration.m_x = -m_velocities[0].m_x * m_momentum;
+    acceleration.m_y = -m_velocities[0].m_y * m_momentum;
+
+    m_velocities[0] += acceleration * dt;
 
     float sw = setting("screen_width");
     float sh = setting("screen_height");
@@ -24,7 +25,6 @@ void PlayerData::update(float dt)
     if (m_positions[0].m_y > sh / 2 && m_positions[0].m_y < mh - sh / 2)
         setting("cam_offset_y") = m_positions[0].m_y - sh / 2.f;
 
-    m_velocities[0] += acceleration * dt;
     SpaceObjectsData::update(dt);
 }
 
@@ -75,6 +75,40 @@ void PlayerData::wrapCoordinates()
         if (top(0ull) > mh)     {
             m_positions[0ull].m_y = m_radiuses[0ull];
             setting("cam_offset_y") = m_positions[0ull].m_y - m_radiuses[0ull];
+        }
+    }
+}
+
+void PlayerData::activateImprovements()
+{
+    // if improvement exist AND improvement not destroyed AND improvement not active
+    if (m_improvements->size() && !m_improvements->getDestructibleType(m_active_imprvs_indx)->isDestroyed() && m_improvements->getStage(m_active_imprvs_indx))
+        m_improvements->destroy(m_active_imprvs_indx);
+
+    if (!m_owned_imprvs.empty()) {
+        m_active_imprvs_indx = m_owned_imprvs.top();
+
+        m_improvements->restore(m_active_imprvs_indx);
+        m_improvements->activate(m_active_imprvs_indx);
+
+        m_improvements->setPosition(m_active_imprvs_indx, m_positions[0ull]);
+
+        m_owned_imprvs.pop();
+    }
+}
+
+void PlayerData::setImprovementsData(ImprovementsData *value)
+{
+    m_improvements = value;
+}
+
+void PlayerData::addImprovements(vector<SpaceObjectsData::OverlappedPair> ovrlpd_imprvs)
+{
+    for (size_t indx = 0ull; indx < ovrlpd_imprvs.size(); indx++) {
+        size_t imprv_indx = ovrlpd_imprvs[indx].object;
+        if (!m_improvements->getDestructibleType(imprv_indx)->isDestroyed() && m_improvements->getStage(imprv_indx) == false) {
+            m_owned_imprvs.push(imprv_indx);
+            m_improvements->destroy(imprv_indx);
         }
     }
 }

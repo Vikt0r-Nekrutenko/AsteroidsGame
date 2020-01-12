@@ -8,15 +8,11 @@
 #include "AsteroidsData.h"
 #include "PlayerData.h"
 #include "BulletsData.h"
+#include "ImprovementsData.h"
 
-class ImprovementsData : public SpaceObjectsData
-{
-public:
-
-private:
-    vector<float> m_periods;
-    vector<bool> m_stages;
-};
+namespace global {
+const float CLEAR_SPACE_RADIUS = 150.f;
+}
 
 class MyFramework : public Framework {
 public:
@@ -29,6 +25,9 @@ public:
     void onMouseMove(int x, int y, int xrelative, int yrelative) override;
     void onMouseButtonClick(FRMouseButton button, bool isReleased) override;
     const char * GetTitle() override;
+
+    void restart(vector<SpaceObjectsData::OverlappedPair> ovrlpd_indxs);
+    void createImprovement(vector<SpaceObjectsData::OverlappedPair> ovrlpd_indxs);
 
 private:
     ImprovementsData improvements;
