@@ -10,6 +10,7 @@ SOURCES += \
     Destructible.cpp \
     GlobalSettings.cpp \
     Map.cpp \
+    PlayerData.cpp \
     SpaceObjectsData.cpp \
     SpritesDataHolder.cpp \
     Vector2d.cpp \
@@ -21,6 +22,7 @@ HEADERS += \
     Framework.h \
     GlobalSettings.h \
     Map.h \
+    PlayerData.h \
     SpaceObjectsData.h \
     SpritesDataHolder.h \
     Vector2d.h \

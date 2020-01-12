@@ -17,13 +17,19 @@ bool MyFramework::Init()
     sprites().load("release/data/background.png", "map");
     sprites().load("release/data/big_asteroid.png", "big_asteroid");
     sprites().load("release/data/small_asteroid.png", "small_asteroid");
+    sprites().load("release/data/spaceship.png", "spaceship");
 
     for (int i = 0; i < setting("num_asteroids"); i++)
         asteroids.add({ 0.f, 0.f },
                       { 0.f, 0.f },
 //                      { random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY), random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY)},
                       &sprites().get("big_asteroid"), new BigAsteroidDestruction);
-    asteroids.placeObjects({340, 190}, 150);
+    player.add({ setting("map_width") / 2.f, setting("map_height") / 2.f },
+               { 0.f, 0.f },
+               &sprites().get("spaceship"),
+               new OneStageDestruction);
+
+    asteroids.placeObjects(player.getPosition(0ull), 150);
     return true;
 }
 
@@ -37,6 +43,9 @@ bool MyFramework::Tick()
     auto t1 = chrono::high_resolution_clock::now();
 
     drawMap();
+
+    player.draw();
+    player.update(dt);
 
     asteroids.draw();
     asteroids.update(dt);
@@ -53,7 +62,12 @@ bool MyFramework::Tick()
 
 void MyFramework::onMouseMove(int x, int y, int xrelative, int yrelative)
 {
+    cursor_position = { float(x + setting("cam_offset_x")), float(y + setting("cam_offset_y")) };
 
+    float dx = player.getPosition(0ull).m_x - cursor_position.m_x;
+    float dy = player.getPosition(0ull).m_y - cursor_position.m_y;
+
+    player.setAngle({ dx, dy });
 }
 
 void MyFramework::onMouseButtonClick(FRMouseButton button, bool isReleased)
@@ -63,12 +77,18 @@ void MyFramework::onMouseButtonClick(FRMouseButton button, bool isReleased)
 
 void MyFramework::onKeyPressed(FRKey k)
 {
-
+    switch (k) {
+    case FRKey::UP:    player.setVelocity(0ull, { 0.f, -MAX_OBJ_VELOCITY }); break;
+    case FRKey::DOWN:  player.setVelocity(0ull, { 0.f, +MAX_OBJ_VELOCITY }); break;
+    case FRKey::LEFT:  player.setVelocity(0ull, { -MAX_OBJ_VELOCITY, 0.f }); break;
+    case FRKey::RIGHT: player.setVelocity(0ull, { +MAX_OBJ_VELOCITY, 0.f }); break;
+    }
+    player.setMomentum(0.f);
 }
 
 void MyFramework::onKeyReleased(FRKey k)
 {
-
+    player.setMomentum(DEF_MOMENTUM);
 }
 
 const char* MyFramework::GetTitle()

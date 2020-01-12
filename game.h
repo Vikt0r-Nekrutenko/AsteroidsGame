@@ -6,6 +6,7 @@
 #include "SpritesDataHolder.h"
 
 #include "AsteroidsData.h"
+#include "PlayerData.h"
 
 class MyFramework : public Framework {
 public:
@@ -21,7 +22,9 @@ public:
 
 private:
     AsteroidsData asteroids;
+    PlayerData player;
 
+    Vector2d cursor_position;
     float dt = 0.f;
 };
 
