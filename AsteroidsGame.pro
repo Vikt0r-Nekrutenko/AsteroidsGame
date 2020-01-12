@@ -6,14 +6,20 @@ CONFIG -= qt
 DEFINES += _WINDOWS
 
 SOURCES += \
+    Destructible.cpp \
     GlobalSettings.cpp \
+    Map.cpp \
+    SpaceObjectsData.cpp \
     SpritesDataHolder.cpp \
     Vector2d.cpp \
     game.cpp
 
 HEADERS += \
+    Destructible.h \
     Framework.h \
     GlobalSettings.h \
+    Map.h \
+    SpaceObjectsData.h \
     SpritesDataHolder.h \
     Vector2d.h \
     game.h

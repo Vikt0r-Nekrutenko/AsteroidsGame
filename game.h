@@ -5,6 +5,8 @@
 #include "GlobalSettings.h"
 #include "SpritesDataHolder.h"
 
+#include "SpaceObjectsData.h"
+
 class MyFramework : public Framework {
 public:
     void PreInit(int &width, int &height, bool &fullscreen) override;
@@ -16,6 +18,11 @@ public:
     void onMouseMove(int x, int y, int xrelative, int yrelative) override;
     void onMouseButtonClick(FRMouseButton button, bool isReleased) override;
     const char * GetTitle() override;
+
+private:
+    SpaceObjectsData asteroids;
+
+    float dt = 0.f;
 };
 
 #endif // GAME_H

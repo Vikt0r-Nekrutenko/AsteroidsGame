@@ -1,6 +1,7 @@
 #ifndef VECTOR2D_H
 #define VECTOR2D_H
 
+float random(float min, float max);
 
 struct Vector2d
 {

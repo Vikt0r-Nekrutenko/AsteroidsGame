@@ -1,6 +1,10 @@
 #include "Vector2d.h"
 #include <cmath>
 
+float random(float min, float max) {
+    return min + rand() % int(max - min);
+}
+
 Vector2d::Vector2d(float x, float y) :
     m_x{x}, m_y{y}
 {
