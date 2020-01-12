@@ -42,3 +42,39 @@ void PlayerData::setMomentum(float value)
 {
     m_momentum = value;
 }
+
+void PlayerData::wrapCoordinates()
+{
+    using namespace global;
+    float mw = setting("map_width");
+    float mh = setting("map_height");
+
+    float sw = setting("screen_width");
+    float sh = setting("screen_height");
+
+    // horizontal wrapping
+    {
+        if (right(0ull) < 0.f) {
+            m_positions[0ull].m_x = mw - m_radiuses[0ull];
+            setting("cam_offset_x") = m_positions[0ull].m_x - sw + m_radiuses[0ull];
+        }
+
+        if (left(0ull) > mw)  {
+            m_positions[0ull].m_x = m_radiuses[0ull];
+            setting("cam_offset_x") = m_positions[0ull].m_x - m_radiuses[0ull];
+        }
+    }
+
+    // vertival wrapping
+    {
+        if (bottom(0ull) < 0.f) {
+            m_positions[0ull].m_y = mh - m_radiuses[0ull];
+            setting("cam_offset_y") = m_positions[0ull].m_y - sh + m_radiuses[0ull];
+        }
+
+        if (top(0ull) > mh)     {
+            m_positions[0ull].m_y = m_radiuses[0ull];
+            setting("cam_offset_y") = m_positions[0ull].m_y - m_radiuses[0ull];
+        }
+    }
+}

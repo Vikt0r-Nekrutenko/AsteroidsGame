@@ -40,7 +40,7 @@ public:
     float bottom(size_t indx);
 
     void draw();
-    void wrapCoordinates();
+    virtual void wrapCoordinates();
     void placeObjects(Vector2d center, float radius);
     void changeDestructibleType(size_t indx, Destructible *stage);
 

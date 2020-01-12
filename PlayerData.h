@@ -18,6 +18,8 @@ public:
 
     void setMomentum(float value);
 
+    void wrapCoordinates() override;
+
 private:
     float m_momentum = global::DEF_MOMENTUM;
     float m_angle = 0.f;
