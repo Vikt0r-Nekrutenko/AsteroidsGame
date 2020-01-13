@@ -19,10 +19,33 @@ void global::readCmdParams(int argc, char **argv, vector< pair<string, list<floa
             }
         }
     }
+
+    checkSettings();
 }
 
 float &global::setting(const string &key)
 {
     static map<string, float> holder;
     return holder[key];
+}
+
+void global::checkSettings()
+{
+    if (setting("screen_width") < 640.f)
+        setting("screen_width") = 640.f;
+
+    if (setting("screen_height") < 480.f)
+        setting("screen_height") = 480.f;
+
+    if (setting("map_width") < setting("screen_width"))
+        setting("map_width") = setting("screen_width");
+
+    if (setting("map_height") < setting("screen_height"))
+        setting("map_height") = setting("screen_height");
+
+    if (setting("num_asteroids") == 0.f)
+        setting("num_asteroids") = 10.f;
+
+    if (setting("num_ammo") == 0.f)
+        setting("num_ammo") = 1.f;
 }

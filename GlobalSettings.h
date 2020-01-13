@@ -9,6 +9,7 @@ using namespace std;
 
 namespace global {
     void readCmdParams(int argc, char **argv, vector< pair<string, list<float *>> > cmd_params);
+    void checkSettings();
     float &setting(const string &key);
 }
 

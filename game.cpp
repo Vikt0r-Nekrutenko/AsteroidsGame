@@ -14,14 +14,14 @@ void MyFramework::PreInit(int& width, int& height, bool& fullscreen)
 
 bool MyFramework::Init()
 {
-    sprites().load("release/data/background.png", "map");
-    sprites().load("release/data/big_asteroid.png", "big_asteroid");
-    sprites().load("release/data/small_asteroid.png", "small_asteroid");
-    sprites().load("release/data/spaceship.png", "spaceship");
-    sprites().load("release/data/bullet.png", "bullet");
-    sprites().load("release/data/auto_shooting.png", "auto_shooting");
-    sprites().load("release/data/shield.png", "shield");
-    sprites().load("release/data/rocket.png", "rocket");
+    sprites().load("data/background.png", "map");
+    sprites().load("data/big_asteroid.png", "big_asteroid");
+    sprites().load("data/small_asteroid.png", "small_asteroid");
+    sprites().load("data/spaceship.png", "spaceship");
+    sprites().load("data/bullet.png", "bullet");
+    sprites().load("data/auto_shooting.png", "auto_shooting");
+    sprites().load("data/shield.png", "shield");
+    sprites().load("data/rocket.png", "rocket");
 
     for (int i = 0; i < setting("num_asteroids"); i++)
         asteroids.add({ 0.f, 0.f }, { random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY), random(-MAX_OBJ_VELOCITY, +MAX_OBJ_VELOCITY)}, &sprites().get("big_asteroid"), new BigAsteroidDestruction);
@@ -33,9 +33,6 @@ bool MyFramework::Init()
 
     asteroids.placeObjects(player.getPosition(0ull), CLEAR_SPACE_RADIUS);
 
-    improvements.add(player.getPosition(0ull), {0,0}, &sprites().get("shield"), new OneStageDestruction, new Shield);
-    player.addImprovements({{0,0}});
-    player.activateImprovements();
     return true;
 }
 
