@@ -6,7 +6,7 @@
 
 
 namespace global {
-const float DEF_PERIOD = 5.f;
+const float DEF_PERIOD = 55.f;
 }
 
 class ImprovementsData : public SpaceObjectsData

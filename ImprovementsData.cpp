@@ -42,8 +42,10 @@ void ImprovementsData::add(Vector2d position, Vector2d velocity, global::SpriteD
 
 void ImprovementsData::remove(size_t num) {
     SpaceObjectsData::remove(num);
+
     for (size_t i = 0ull; i < num; i++) {
         delete m_types.back();
+        m_types.pop_back();
         m_periods.pop_back();
         m_stages.pop_back();
     }

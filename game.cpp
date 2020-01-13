@@ -32,6 +32,10 @@ bool MyFramework::Init()
     improvements.setAsteroidsData(&asteroids);
 
     asteroids.placeObjects(player.getPosition(0ull), CLEAR_SPACE_RADIUS);
+
+    improvements.add(player.getPosition(0ull), {0,0}, &sprites().get("shield"), new OneStageDestruction, new Shield);
+    player.addImprovements({{0,0}});
+    player.activateImprovements();
     return true;
 }
 
@@ -63,7 +67,7 @@ bool MyFramework::Tick()
 
     // collision & overlapping
     {
-        // between improvements & asteroids;
+        // 1 STEP. between improvements & asteroids;
         vector<SpaceObjectsData::OverlappedPair> ovrlpd_imprvs_astrds = improvements.overlapping(asteroids);
         improvements.collisionHandler(ovrlpd_imprvs_astrds, asteroids, dt);
 
@@ -81,6 +85,10 @@ bool MyFramework::Tick()
 
         // creation new improvement
         createImprovement(ovrlpd_astrds_bullts);
+
+        // 2 STEP. of between improvements & asteroids;
+        vector<SpaceObjectsData::OverlappedPair> ovrlpd_imprvs_astrds2 = improvements.overlapping(asteroids);
+        improvements.collisionHandler(ovrlpd_imprvs_astrds2, asteroids, dt);
 
         // game restarting
         vector<SpaceObjectsData::OverlappedPair> ovrlpd_astrds_player = asteroids.overlapping(player);
